@@ -62,6 +62,7 @@ install:
   ##################################################
   # Install ninja so we have readable output.
   - mkdir c:\projects\install
+  - set oldcd=%cd%
   - cd c:\projects\install
   - appveyor DownloadFile https://github.com/ninja-build/ninja/releases/download/v1.7.2/ninja-win.zip
   - 7z x ninja-win.zip -oc:\projects\install\ninja > nul
@@ -84,7 +85,7 @@ install:
 
 before_build:
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
-  - cd c:\projects\dynamorio
+  - cd %oldcd%
 
 build_script:
   - mkdir build
