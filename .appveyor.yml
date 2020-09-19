@@ -33,18 +33,15 @@
 notifications:
   - provider: Email
     to:
-      - dynamorio-devs@googlegroups.com
-    on_build_success: false
+      - jessielesbian@protonmail.com
+    on_build_success: true
     on_build_failure: true
-    # Unfortunately there's no way to disable emails on pull requests,
-    # like Travis does, so we try to cut down on the noise by only
-    # sending out failures.
     on_build_status_changed: false
 
 # We don't do a shallow clone of just the source archive as we want to get
 # the diff for source file checks.
 # We do limit to the last few commits to speed things up:
-clone_depth: 10
+clone_depth: 16
 
 # Don't run on pushes to feature branches: pull requests cover those.
 branches:
@@ -53,14 +50,13 @@ branches:
 
 platform: x64
 
-image: Visual Studio 2013
+image: Visual Studio 2019
 
 build:
   verbosity: detailed
 
 configuration:
-  - 2010
-  - 2013
+  - 2019
 
 install:
   ##################################################
@@ -87,17 +83,12 @@ install:
   # XXX i#2145: point at Qt5 for testing drgui build.
 
 before_build:
-  - if "%configuration%"=="2010" call "c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\vcvarsall.bat" x86
-  - if "%configuration%"=="2013" call "c:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x86
+  - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
   - cd c:\projects\dynamorio
 
 build_script:
   - mkdir build
   - cd build
   - echo %PATH%
-  # AppVeyor does not have the 64-bit toolchain installed for 2010.
-  # Given that, and the lack of parallel builds for free, we shorten
-  # the total time by not running the tests for 2010.
-  - if "%configuration%"=="2010" set EXTRA_ARGS=32_only;build_only
   # The perl in c:\perl can't open a pipe so we use cygwin perl.
   - c:\cygwin\bin\perl ../suite/runsuite_wrapper.pl travis use_ninja %EXTRA_ARGS%
