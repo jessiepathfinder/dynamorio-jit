@@ -70,7 +70,11 @@ install:
 
   ##################################################
   # Install packages for docs.
-  - choco install -y doxygen.portable imagemagick.tool ghostscript
+  - choco install -y imagemagick.tool ghostscript
+  # choco fails to download doxygen.portable so we install ourselves
+  - appveyor DownloadFile http://doxygen.nl/files/doxygen-1.8.19.windows.x64.bin.zip
+  - 7z x doxygen-1.8.19.windows.x64.bin.zip -oc:\projects\install\doxygen > nul
+  - set PATH=c:\projects\install\doxygen;%PATH%
   # The ghostscript package is an install that doesn't add to PATH.
   # FIXME i#2145: fig2dev is failing to launch ghostscript, so for now
   # we're disabling to get the initial AppVeyor to be green.
